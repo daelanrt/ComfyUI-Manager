@@ -1497,5 +1497,32 @@ app.registerExtension({
 				ManagerMenuDialog.instance.show();
 			}
 		menu.append(managerButton);
+	},
+
+	async beforeRegisterNodeDef(nodeType, nodeData, app) {
+
+
+		const onDrawForeground = nodeType.prototype.onDrawForeground;
+		nodeType.prototype.onDrawForeground = function (ctx) {
+			const r = onDrawForeground?.apply?.(this, arguments);
+
+			let text = "Impact Pack";
+			let fgColor = "white";
+			let bgColor = "#0F1F0F";
+			let visible = true;
+
+			ctx.save();
+			ctx.font = "12px sans-serif";
+			const sz = ctx.measureText(text);
+			ctx.fillStyle = bgColor;
+			ctx.beginPath();
+			ctx.roundRect(this.size[0]-sz.width-12, -LiteGraph.NODE_TITLE_HEIGHT - 20, sz.width + 12, 20, 5);
+			ctx.fill();
+
+			ctx.fillStyle = fgColor;
+			ctx.fillText(text, this.size[0]-sz.width-6, -LiteGraph.NODE_TITLE_HEIGHT - 6);
+			ctx.restore();
+			return r;
+		};
 	}
 });
